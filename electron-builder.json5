@@ -1,0 +1,33 @@
+{
+  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+  "appId": "com.crm.windows",
+  "asar": true,
+  "asarUnpack": [
+    "node_modules/better-sqlite3/**"
+  ],
+  "productName": "CRM Windows",
+  "directories": {
+    "output": "release/${version}"
+  },
+  "files": [
+    "dist",
+    "dist-electron",
+    "node_modules/better-sqlite3/**/*"
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": [
+          "x64"
+        ]
+      }
+    ],
+    "artifactName": "${productName}-${version}-Setup.${ext}"
+  },
+  "nsis": {
+    "oneClick": true,
+    "perMachine": false,
+    "deleteAppDataOnUninstall": false
+  }
+}

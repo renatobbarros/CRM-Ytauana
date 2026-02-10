@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Noto+Sans:wght@300;400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 180 100% 96%;
+    --foreground: 196 63% 24%;
+
+    --card: 180 100% 98%;
+    --card-foreground: 196 63% 24%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 196 63% 24%;
+
+    --primary: 191 91% 36%;
+    --primary-foreground: 180 100% 96%;
+
+    --secondary: 187 75% 92%;
+    --secondary-foreground: 191 91% 36%;
+
+    --muted: 187 75% 92%;
+    --muted-foreground: 196 50% 45%;
+
+    --accent: 161 94% 30%;
+    --accent-foreground: 180 100% 96%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 191 30% 85%;
+    --input: 191 30% 85%;
+    --ring: 191 91% 36%;
+
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 196 63% 10%;
+    --foreground: 180 100% 96%;
+
+    --card: 196 63% 12%;
+    --card-foreground: 180 100% 96%;
+
+    --popover: 196 63% 10%;
+    --popover-foreground: 180 100% 96%;
+
+    --primary: 187 82% 56%;
+    --primary-foreground: 196 63% 10%;
+
+    --secondary: 196 63% 20%;
+    --secondary-foreground: 180 100% 96%;
+
+    --muted: 196 63% 20%;
+    --muted-foreground: 196 20% 70%;
+
+    --accent: 161 94% 45%;
+    --accent-foreground: 196 63% 10%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 196 63% 25%;
+    --input: 196 63% 25%;
+    --ring: 187 82% 56%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Noto Sans', sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Figtree', sans-serif;
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer components {
+
+  /* OdontoCRM Custom Components */
+  .card-premium {
+    @apply bg-card rounded-xl p-6 shadow-sm border border-border/50 hover:shadow-md hover:border-primary/30 transition-all duration-200 cursor-pointer;
+  }
+
+  .btn-medical {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold transition-all duration-200 active:scale-95;
+  }
+
+  .btn-medical-primary {
+    @apply btn-medical bg-primary text-primary-foreground shadow-sm hover:bg-primary/90;
+  }
+}
