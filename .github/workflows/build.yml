@@ -39,7 +39,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ytauana-crm-installer
-          path: release/**/*.exe
+          path: release/**/*-Setup.exe
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
@@ -47,4 +47,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: release/**/*.exe
+          files: release/**/*-Setup.exe
