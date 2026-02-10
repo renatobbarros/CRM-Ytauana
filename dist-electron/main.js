@@ -1,13 +1,12 @@
-import { app, ipcMain, BrowserWindow } from "electron";
-import { fileURLToPath } from "node:url";
-import path$1 from "node:path";
-import Database from "better-sqlite3";
-import path from "path";
-const dbPath = path.join(app.getPath("userData"), "crm.db");
-const db = new Database(dbPath);
-db.pragma("journal_mode = WAL");
-function initDb() {
-  db.exec(`
+import { app as i, ipcMain as n, BrowserWindow as T } from "electron";
+import { fileURLToPath as l } from "node:url";
+import d from "node:path";
+import _ from "better-sqlite3";
+import R from "path";
+const m = R.join(i.getPath("userData"), "crm.db"), t = new _(m);
+t.pragma("journal_mode = WAL");
+function u() {
+  t.exec(`
     CREATE TABLE IF NOT EXISTS clients (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
@@ -58,125 +57,68 @@ function initDb() {
     );
   `);
   try {
-    db.exec("ALTER TABLE payments ADD COLUMN end_date TEXT");
-  } catch (e) {
+    t.exec("ALTER TABLE payments ADD COLUMN end_date TEXT");
+  } catch {
   }
 }
-const __dirname$1 = path$1.dirname(fileURLToPath(import.meta.url));
-process.env.APP_ROOT = path$1.join(__dirname$1, "..");
-const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
-const MAIN_DIST = path$1.join(process.env.APP_ROOT, "dist-electron");
-const RENDERER_DIST = path$1.join(process.env.APP_ROOT, "dist");
-process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path$1.join(process.env.APP_ROOT, "public") : RENDERER_DIST;
-let win;
-initDb();
-function createWindow() {
-  win = new BrowserWindow({
-    icon: path$1.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
+const p = d.dirname(l(import.meta.url));
+process.env.APP_ROOT = d.join(p, "..");
+const s = process.env.VITE_DEV_SERVER_URL, S = d.join(process.env.APP_ROOT, "dist-electron"), c = d.join(process.env.APP_ROOT, "dist");
+process.env.VITE_PUBLIC = s ? d.join(process.env.APP_ROOT, "public") : c;
+let r;
+u();
+function o() {
+  r = new T({
+    icon: d.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
     webPreferences: {
-      preload: path$1.join(__dirname$1, "preload.mjs")
+      preload: d.join(p, "preload.mjs")
     }
-  });
-  win.webContents.on("did-finish-load", () => {
-    win == null ? void 0 : win.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
-  });
-  if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL);
-  } else {
-    win.loadFile(path$1.join(RENDERER_DIST, "index.html"));
-  }
+  }), r.webContents.on("did-finish-load", () => {
+    r == null || r.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
+  }), s ? r.loadURL(s) : r.loadFile(d.join(c, "index.html"));
 }
-ipcMain.handle("get-clients", () => {
-  return db.prepare("SELECT * FROM clients ORDER BY name ASC").all();
-});
-ipcMain.handle("add-client", (_, client) => {
-  const stmt = db.prepare("INSERT INTO clients (name, phone, email, address, notes) VALUES (@name, @phone, @email, @address, @notes)");
-  return stmt.run(client);
-});
-ipcMain.handle("update-client", (_, client) => {
-  const stmt = db.prepare("UPDATE clients SET name = @name, phone = @phone, email = @email, address = @address, notes = @notes WHERE id = @id");
-  return stmt.run(client);
-});
-ipcMain.handle("delete-client", (_, id) => {
-  return db.prepare("DELETE FROM clients WHERE id = ?").run(id);
-});
-ipcMain.handle("get-payments", () => {
-  return db.prepare(`
+n.handle("get-clients", () => t.prepare("SELECT * FROM clients ORDER BY name ASC").all());
+n.handle("add-client", (a, e) => t.prepare("INSERT INTO clients (name, phone, email, address, notes) VALUES (@name, @phone, @email, @address, @notes)").run(e));
+n.handle("update-client", (a, e) => t.prepare("UPDATE clients SET name = @name, phone = @phone, email = @email, address = @address, notes = @notes WHERE id = @id").run(e));
+n.handle("delete-client", (a, e) => t.prepare("DELETE FROM clients WHERE id = ?").run(e));
+n.handle("get-payments", () => t.prepare(`
     SELECT p.*, c.name as client_name 
     FROM payments p 
     LEFT JOIN clients c ON p.client_id = c.id 
     ORDER BY p.due_date ASC
-  `).all();
-});
-ipcMain.handle("add-payment", (_, payment) => {
-  const stmt = db.prepare("INSERT INTO payments (client_id, amount, due_date, status, description, recurrence, end_date) VALUES (@client_id, @amount, @due_date, @status, @description, @recurrence, @end_date)");
-  return stmt.run(payment);
-});
-ipcMain.handle("update-payment-status", (_, { id, status }) => {
-  return db.prepare("UPDATE payments SET status = ? WHERE id = ?").run(status, id);
-});
-ipcMain.handle("update-payment", (_, payment) => {
-  const stmt = db.prepare("UPDATE payments SET client_id = @client_id, amount = @amount, due_date = @due_date, description = @description, recurrence = @recurrence, end_date = @end_date WHERE id = @id");
-  return stmt.run(payment);
-});
-ipcMain.handle("delete-payment", (_, id) => {
-  return db.prepare("DELETE FROM payments WHERE id = ?").run(id);
-});
-ipcMain.handle("get-processes", () => {
-  return db.prepare(`
+  `).all());
+n.handle("add-payment", (a, e) => t.prepare("INSERT INTO payments (client_id, amount, due_date, status, description, recurrence, end_date) VALUES (@client_id, @amount, @due_date, @status, @description, @recurrence, @end_date)").run(e));
+n.handle("update-payment-status", (a, { id: e, status: E }) => t.prepare("UPDATE payments SET status = ? WHERE id = ?").run(E, e));
+n.handle("update-payment", (a, e) => t.prepare("UPDATE payments SET client_id = @client_id, amount = @amount, due_date = @due_date, description = @description, recurrence = @recurrence, end_date = @end_date WHERE id = @id").run(e));
+n.handle("delete-payment", (a, e) => t.prepare("DELETE FROM payments WHERE id = ?").run(e));
+n.handle("get-processes", () => t.prepare(`
     SELECT p.*, c.name as client_name 
     FROM process_pipelines p 
     LEFT JOIN clients c ON p.client_id = c.id 
     ORDER BY p.created_at DESC
-  `).all();
-});
-ipcMain.handle("add-process", (_, process2) => {
-  const stmt = db.prepare("INSERT INTO process_pipelines (client_id, title, status, stage, value, deadline) VALUES (@client_id, @title, @status, @stage, @value, @deadline)");
-  return stmt.run(process2);
-});
-ipcMain.handle("update-process-stage", (_, { id, stage }) => {
-  return db.prepare("UPDATE process_pipelines SET stage = ? WHERE id = ?").run(stage, id);
-});
-ipcMain.handle("update-process", (_, process2) => {
-  const stmt = db.prepare("UPDATE process_pipelines SET client_id = @client_id, title = @title, value = @value, deadline = @deadline WHERE id = @id");
-  return stmt.run(process2);
-});
-ipcMain.handle("delete-process", (_, id) => {
-  return db.prepare("DELETE FROM process_pipelines WHERE id = ?").run(id);
-});
-ipcMain.handle("get-appointments", () => {
-  return db.prepare(`
+  `).all());
+n.handle("add-process", (a, e) => t.prepare("INSERT INTO process_pipelines (client_id, title, status, stage, value, deadline) VALUES (@client_id, @title, @status, @stage, @value, @deadline)").run(e));
+n.handle("update-process-stage", (a, { id: e, stage: E }) => t.prepare("UPDATE process_pipelines SET stage = ? WHERE id = ?").run(E, e));
+n.handle("update-process", (a, e) => t.prepare("UPDATE process_pipelines SET client_id = @client_id, title = @title, value = @value, deadline = @deadline WHERE id = @id").run(e));
+n.handle("delete-process", (a, e) => t.prepare("DELETE FROM process_pipelines WHERE id = ?").run(e));
+n.handle("get-appointments", () => t.prepare(`
     SELECT a.*, c.name as client_name 
     FROM appointments a 
     LEFT JOIN clients c ON a.client_id = c.id 
     ORDER BY a.start_date ASC
-  `).all();
+  `).all());
+n.handle("add-appointment", (a, e) => t.prepare("INSERT INTO appointments (client_id, title, type, day_of_month, start_date, end_date, recurrence, notes) VALUES (@client_id, @title, @type, @day_of_month, @start_date, @end_date, @recurrence, @notes)").run(e));
+n.handle("update-appointment", (a, e) => t.prepare("UPDATE appointments SET client_id = @client_id, title = @title, type = @type, day_of_month = @day_of_month, start_date = @start_date, end_date = @end_date, recurrence = @recurrence, notes = @notes WHERE id = @id").run(e));
+n.handle("delete-appointment", (a, e) => t.prepare("DELETE FROM appointments WHERE id = ?").run(e));
+i.on("window-all-closed", () => {
+  process.platform !== "darwin" && (i.quit(), r = null);
 });
-ipcMain.handle("add-appointment", (_, appt) => {
-  const stmt = db.prepare("INSERT INTO appointments (client_id, title, type, day_of_month, start_date, end_date, recurrence, notes) VALUES (@client_id, @title, @type, @day_of_month, @start_date, @end_date, @recurrence, @notes)");
-  return stmt.run(appt);
+i.on("activate", () => {
+  T.getAllWindows().length === 0 && o();
 });
-ipcMain.handle("update-appointment", (_, appt) => {
-  const stmt = db.prepare("UPDATE appointments SET client_id = @client_id, title = @title, type = @type, day_of_month = @day_of_month, start_date = @start_date, end_date = @end_date, recurrence = @recurrence, notes = @notes WHERE id = @id");
-  return stmt.run(appt);
-});
-ipcMain.handle("delete-appointment", (_, id) => {
-  return db.prepare("DELETE FROM appointments WHERE id = ?").run(id);
-});
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-    win = null;
-  }
-});
-app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
-});
-app.whenReady().then(createWindow);
+i.whenReady().then(o);
 export {
-  MAIN_DIST,
-  RENDERER_DIST,
-  VITE_DEV_SERVER_URL
+  S as MAIN_DIST,
+  c as RENDERER_DIST,
+  s as VITE_DEV_SERVER_URL
 };

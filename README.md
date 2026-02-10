@@ -71,11 +71,21 @@ npm run dev
 ```
 
 ### Gerar Executável (.exe)
-Para gerar o standalone para Windows:
+Existem duas formas de gerar o instalador:
+
+#### 1. Via GitHub Actions (Recomendado 🚀)
+Como o repositório está configurado com automação, você não precisa instalar nada no seu computador:
+1. Faça o `git push` do seu código para o GitHub.
+2. No seu repositório, clique na aba **"Actions"**.
+3. Selecione o workflow **"Build and Release Ytauana CRM"**.
+4. Assim que terminar, clique na execução e baixe o arquivo em **"Artifacts"** no final da página.
+
+#### 2. Manualmente (Local)
+Para gerar o standalone na sua máquina:
 ```bash
 npm run build
 ```
-O executável será gerado na pasta `dist`.
+O executável será gerado na pasta `dist`. *Nota: Requer ferramentas de compilação C++ instaladas no Windows.*
 
 ---
 

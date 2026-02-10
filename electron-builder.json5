@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
   "appId": "com.crm.windows",
-  "asar": true,
+  "asar": false,
   "asarUnpack": [
     "node_modules/better-sqlite3/**"
   ],
