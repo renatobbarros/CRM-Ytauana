@@ -23,12 +23,10 @@ jobs:
       - name: Install Dependencies
         run: |
           npm install
-        working-directory: ./WindowsCRM
 
       - name: Build and Package
         run: |
           npm run build
-        working-directory: ./WindowsCRM
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -36,4 +34,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ytauana-crm-installer
-          path: WindowsCRM/dist/*.exe
+          path: release/**/*.exe
